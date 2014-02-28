@@ -1,6 +1,5 @@
-#!/usr/bin/env python3
-
 import sys
+import time
 import subprocess
 
 def lines(file):
@@ -34,12 +33,14 @@ def start_nodes(host, f, t, dim, time, config_path):
     prefix = sys.path[0]
     args = "{0} {1} {2} {3} {4} {5}".format(f, t, dim, time, prefix, config_path)
     remote_cmd =  prefix + "/start_nodes.sh " + args
-    cmd = ["ssh", "-4", "-A", host, remote_cmd]
-    return subprocess.Popen(cmd)
+    cmd = ["ssh", "-4", "-A", "-q", host, remote_cmd]
+    return subprocess.Popen(cmd,
+                            stdout = subprocess.PIPE,
+                            universal_newlines = True)
 
 def main(args):
     dim = int(args[1])
-    time = float(args[2])
+    tt = float(args[2])
     config_path = args[3]
     hosts_path = args[4]
     hosts = lines(hosts_path)
@@ -47,9 +48,11 @@ def main(args):
     write_config(build_config(d), config_path)
     procs = []
     for host, f, t in d:
-        procs.append(start_nodes(host, f, t, dim, time, config_path))
+        time.sleep(0.1)
+        procs.append(start_nodes(host, f, t, dim, tt, config_path))
     for p in procs:
         p.wait()
+        print(p.communicate()[0].strip())
 
 if __name__ == "__main__":
     main(sys.argv)

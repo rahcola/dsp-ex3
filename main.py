@@ -50,7 +50,7 @@ class P():
             print(id, self.id, hops)
 
     def writable(self):
-        return time.time() - self.last_sent > 1
+        return time.time() - self.last_sent > 0.1
 
     def handle_write(self):
         id = self.messages.popleft()
