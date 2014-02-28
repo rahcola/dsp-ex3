@@ -1,6 +1,6 @@
 #!/bin/bash
 
-trap '[ ! -z $(jobs -p) ] && kill $(jobs -p)' SIGINT SIGTERM EXIT
+trap '[ ! -z "$(jobs -p)" ] && kill $(jobs -p)' SIGINT SIGTERM EXIT
 
 from="$1"
 to="$2"

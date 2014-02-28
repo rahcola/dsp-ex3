@@ -13,19 +13,17 @@ def lines(file):
 def distribute(dim, hosts):
     n = 2 ** dim
     per_node = int(n / len(hosts))
-    f = 0
-    d = []
-    for host in hosts:
-        d.append((host, f, min(f + per_node, n)))
-        f += per_node
+    d = list(zip(hosts,
+                 range(0, n, per_node),
+                 range(per_node, n + 1, per_node)))
+    l = d[-1]
+    d[-1] = (l[0], l[1], n)
     return d
 
 def build_config(distribution):
-    c = []
-    for host, f, t in distribution:
-        for id in range(f, t):
-            c.append("{0} {1} {2}".format(id, host, 8000 + id - f))
-    return c
+    return ["{0} {1} {2}".format(id, host, 8000 + id - f)
+            for host, f, t in distribution
+            for id in range(f, t)]
 
 def write_config(config, path):
     with open(path, "w") as f:
@@ -36,7 +34,7 @@ def start_nodes(host, f, t, dim, time, config_path):
     prefix = sys.path[0]
     args = "{0} {1} {2} {3} {4} {5}".format(f, t, dim, time, prefix, config_path)
     remote_cmd =  prefix + "/start_nodes.sh " + args
-    cmd = ["ssh", "-A", host, remote_cmd]
+    cmd = ["ssh", "-4", "-A", host, remote_cmd]
     return subprocess.Popen(cmd)
 
 def main(args):

@@ -41,6 +41,7 @@ class P():
 
     def connection_made(self, transport):
         self.transport = transport
+        self.last_sent = time.time()
 
     def datagram_received(self, data, id):
         if id not in self.received:
@@ -49,12 +50,13 @@ class P():
             print(id, self.id, hops)
 
     def writable(self):
-        return True
+        return time.time() - self.last_sent > 1
 
     def handle_write(self):
         id = self.messages.popleft()
         self.transport.sendto(b"PING", id)
         self.messages.append(id)
+        self.last_sent = time.time()
 
 def main(args):
     dimension = int(args[1])
@@ -63,7 +65,7 @@ def main(args):
     remotes = parse_remotes(args[4], dimension)
     node = koorde.KoordeOverDatagram(P(id, remotes), id, remotes)
     node.connect()
-    loop(for_time=t)
+    loop(timeout = 1, for_time = t)
 
 if __name__ == "__main__":
     main(sys.argv)
