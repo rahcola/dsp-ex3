@@ -1,15 +1,9 @@
 #!/bin/bash
 
-trap '[ ! -z "$(jobs -p)" ] && kill $(jobs -p)' SIGINT SIGTERM EXIT
+ids="$1"
+dim="$2"
+timeout="$3"
+conf="$4"
 
-from="$1"
-to="$2"
-dim="$3"
-t="$4"
-prefix="$5"
-conf="$6"
-
-for id in $(seq ${from} $((${to} - 1))); do
-    python3 -u ${prefix}/main.py ${dim} ${id} ${t} ${conf} &
-done
-wait
+parallel --jobs 0 --timeout ${timeout} --header : \
+    python3 -u main.py ${dim} {id} ${conf} ::: id ${ids}
