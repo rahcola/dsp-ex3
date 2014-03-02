@@ -1,7 +1,5 @@
-import select
 import asyncore
 import koorde
-import socket
 import time
 import sys
 from collections import deque
@@ -14,24 +12,6 @@ def parse_remotes(path, dimension):
             id = koorde.Id(int(id), dimension)
             remotes[id] = (host, int(port))
         return remotes
-
-def loop(timeout=30.0, use_poll=False, map=None, for_time=None):
-    if map is None:
-        map = asyncore.socket_map
-
-    if use_poll and hasattr(select, 'poll'):
-        poll_fun = asyncore.poll2
-    else:
-        poll_fun = asyncore.poll
-
-    if for_time is None:
-        while map:
-            poll_fun(timeout, map)
-
-    else:
-        start = time.time()
-        while map and time.time() - start < for_time:
-            poll_fun(timeout, map)
 
 class P():
     def __init__(self, id, remotes):
@@ -61,11 +41,10 @@ class P():
 def main(args):
     dimension = int(args[1])
     id = koorde.Id(int(args[2]), dimension)
-    t = float(args[3])
-    remotes = parse_remotes(args[4], dimension)
+    remotes = parse_remotes(args[3], dimension)
     node = koorde.KoordeOverDatagram(P(id, remotes), id, remotes)
     node.connect()
-    loop(timeout = 1, for_time = t)
+    asyncore.loop(timeout = 0.1)
 
 if __name__ == "__main__":
     main(sys.argv)
