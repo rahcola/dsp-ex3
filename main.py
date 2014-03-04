@@ -1,3 +1,5 @@
+# Jani Rahkola, 01360669
+
 import asyncore
 import koorde
 import time

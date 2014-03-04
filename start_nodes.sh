@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Jani Rahkola, 013606996
+
 ids="$1"
 dim="$2"
 timeout="$3"

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Jani Rahkola, 013606996
+
 import os
 import sys
 import time

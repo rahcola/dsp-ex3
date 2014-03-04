@@ -1,3 +1,5 @@
+# Jani Rahkola, 013606996
+
 import time
 import socket
 import asyncore
