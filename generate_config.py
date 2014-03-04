@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import argparse
 
 def lines(file):
     lines = []
@@ -24,14 +25,24 @@ def build_config(distribution):
             for host, f, t in distribution
             for id in range(f, t)]
 
-def main(args):
-    dim = int(args[1])
-    hosts_path = args[2]
-    hosts = lines(hosts_path)
-    d = distribute(dim, hosts)
+parser = argparse.ArgumentParser(
+    description = "Generates start_overlay.py configurations."
+)
+parser.add_argument("dimension",
+                    metavar = "DIMENSION",
+                    type = int,
+                    help = "dimension of the overlay")
+parser.add_argument("hosts_file",
+                    metavar = "HOSTS",
+                    type = str,
+                    help = "path to a file with hostnames, one per line")
 
-    for s in (build_config(distribute(dim, hosts))):
+def main(args):
+    hosts = lines(args.hosts_file)
+    d = distribute(args.dimension, hosts)
+
+    for s in (build_config(distribute(args.dimension, hosts))):
         print(s)
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main(parser.parse_args())
