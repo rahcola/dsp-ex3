@@ -28,6 +28,7 @@ def remote_cmds(config, config_path, dim, timeout):
 
 def start_node(host, remote_cmd):
     return subprocess.Popen(["ssh", "-A", host, remote_cmd],
+                            stdout = subprocess.PIPE,
                             universal_newlines = True)
 
 def main(args):
@@ -40,9 +41,16 @@ def main(args):
     procs = []
     for host, remote_cmd in remote_cmds(config, config_path, dim, timeout):
         procs.append(start_node(host, remote_cmd))
-        time.sleep(0.1)
+        time.sleep(0.5)
+
+    terminate = False
     for p in procs:
-        p.wait()
+        if terminate:
+            p.terminate()
+        else:
+            print(p.communicate()[0].strip())
+            if p.returncode != 0:
+                terminate = True
 
 if __name__ == "__main__":
     main(sys.argv)
