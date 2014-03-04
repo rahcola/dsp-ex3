@@ -1,0 +1,30 @@
+I chose the Koorde [1] overlay that uses a De Bruijn's graph to organize the
+nodes. The nodes are labeled with binary labels of length D, which means that
+the overlay has 2^D nodes. De Bruijn's graph has a special property that the
+overlay uses to route traffic. If label B = ((A << 1) & 1) or B = (A << 1)
+then there exists a edge A -> B. Thus we can route a message from node a to
+node b by shifting in the bits of b into a one by one.
+
+This routing scheme gives a deterministic number of hops to route a message
+between any nodes. It takes D shifts to transform A into B, thus it takes D
+hops to route a message from A to B. This means that a message might be routed
+through the destination node, even multiple times. I have made a small
+optimization that stops routing a message as soon as it arrives at the right
+node. This should not have much effect for a message between arbitrary nodes.
+
+The size of the routing table is also deterministic. A node in a De Bruijn's
+graph of size m^n has m outgoing edges. Thus the size of the routing table in
+my overlay is 2.
+
+The routing algorithm of Koorde overlay is extremely simple and efficient. The
+size of the routing table and the number of hops are also small and
+deterministic. The rigid routing algorithm has zero tolerance for delivery or
+node failures. Also, the network cannot reconfigure itself dynamically. These
+features make the Koorde overlay best suited for highly static overlays with
+good reliability of nodes and network links. A some sort of cluster with good
+LAN connection could be a good candidate.
+
+I measured the hop count by running an overlay of size 1024 on Ukko. After
+some logistical difficulties I managed to collect the hop count of ~70000
+messages sent. The average of these was 9.95. This confirms my hypothesis that
+my optimization had almost no effect.
