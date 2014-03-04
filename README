@@ -1,0 +1,8 @@
+sample run of the overlay for 300 seconds:
+
+'./generate_config.py 10 config_hosts > config.txt'
+'./start_overlay.py 300 config.txt > output'
+
+The file config_hosts should contain hostnames, one per line, to which the
+overlay is deployed over ssh. The overlay will send messages to every node for
+300 seconds. The file output will contain hop counts for messages received.
