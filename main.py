@@ -30,7 +30,7 @@ class P():
             print(id, self.id, hops)
 
     def writable(self):
-        return time.time() - self.last_sent > 0.1
+        return time.time() - self.last_sent > 0.5
 
     def handle_write(self):
         id = self.messages.popleft()
@@ -44,7 +44,7 @@ def main(args):
     remotes = parse_remotes(args[3], dimension)
     node = koorde.KoordeOverDatagram(P(id, remotes), id, remotes)
     node.connect()
-    asyncore.loop(timeout = 0.1)
+    asyncore.loop(timeout = 0.5)
 
 if __name__ == "__main__":
     main(sys.argv)
