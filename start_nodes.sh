@@ -6,4 +6,4 @@ timeout="$3"
 conf="$4"
 
 parallel --jobs 0 --timeout ${timeout} --header : \
-    python3 -u main.py ${dim} {id} ${conf} ::: id ${ids}
+    "sleep 0.5; python3 -u main.py ${dim} {id} ${conf}" ::: id ${ids}
