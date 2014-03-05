@@ -1,3 +1,5 @@
+Jani Rahkola, 013606996
+
 I chose the Koorde [1] overlay that uses a De Bruijn's graph to organize the
 nodes. The nodes are labeled with binary labels of length D, which means that
 the overlay has 2^D nodes. De Bruijn's graph has a special property that the
@@ -28,3 +30,5 @@ I measured the hop count by running an overlay of size 1024 on Ukko. After
 some logistical difficulties I managed to collect the hop count of ~70000
 messages sent. The average of these was 9.95. This confirms my hypothesis that
 my optimization had almost no effect.
+
+[1] http://en.wikipedia.org/wiki/Koorde
